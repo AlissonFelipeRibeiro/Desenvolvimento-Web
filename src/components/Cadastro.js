@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase"; // Importando Firebase
+import { auth, db } from "../firebase"; // Conexão com Firebase
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";  // Hook para navegação
+import { useNavigate } from "react-router-dom";  // Hook de navegação
 
 const Cadastro = () => {
   const [email, setEmail] = useState("");
@@ -12,8 +12,8 @@ const Cadastro = () => {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();  // Hook de navegação
+  const [error, setError] = useState(""); // Erro para mostrar ao usuário
+  const navigate = useNavigate();  // Hook para navegação
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,18 +23,18 @@ const Cadastro = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
       const user = userCredential.user;
 
-      // Salvando dados adicionais no Firestore
+      // Gravando dados adicionais no Firestore
       await setDoc(doc(db, "usuarios", user.uid), {
         nome,
         sobrenome,
         dataNascimento
       });
 
-      setError("");  // Limpar qualquer erro
-      navigate("/login");  // Redireciona para a página de Login
+      setError("");  // Limpar o erro caso o cadastro seja bem-sucedido
+      navigate("/login");  // Redirecionar para a página de Login
     } catch (error) {
-      console.error("Erro ao cadastrar: ", error);
-      setError("Erro ao cadastrar o usuário!");  // Mensagem de erro
+      console.error("Erro ao cadastrar o usuário: ", error);
+      setError("Erro ao cadastrar o usuário!");  // Exibir erro para o usuário
     }
   };
 
